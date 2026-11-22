@@ -1,43 +1,43 @@
-{
-  "name": "securescan",
-  "version": "1.0.0",
-  "description": "SecureScan — An Explainable Web Application Security Intelligence Platform",
-  "main": "server/index.js",
-  "type": "commonjs",
-  "scripts": {
-    "start": "node server/index.js",
-    "server": "node server/index.js",
-    "client": "npm --prefix client run dev",
-    "build": "npm --prefix client install && npm --prefix client run build && npx prisma generate",
-    "postinstall": "npx prisma generate",
-    "db:push": "npx prisma db push",
-    "db:studio": "npx prisma studio",
-    "db:local": "node -e \"const fs=require('fs'); fs.copyFileSync('prisma/schema.sqlite.prisma', 'prisma/schema.prisma'); console.log('Prisma set to local SQLite.');\" && npx prisma db push",
-    "db:render": "node -e \"const fs=require('fs'); fs.copyFileSync('prisma/schema.postgresql.prisma', 'prisma/schema.prisma'); console.log('Prisma set to Render PostgreSQL.');\" && npx prisma generate"
-  },
-  "keywords": [
-    "security",
-    "web-security",
-    "scanner",
-    "cybersecurity",
-    "passive-scanner",
-    "explainable-security"
-  ],
-  "author": "SecureScan Team",
-  "license": "MIT",
-  "dependencies": {
-    "@prisma/client": "^5.22.0",
-    "bcryptjs": "^2.4.3",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "express-rate-limit": "^7.4.1",
-    "helmet": "^8.0.0",
-    "jsonwebtoken": "^9.0.2",
-    "pdfkit": "^0.15.1"
-  },
-  "devDependencies": {
-    "prisma": "^5.22.0"
-  }
+﻿{
+    "name":  "securescan",
+    "version":  "1.0.0",
+    "description":  "SecureScan â€” An Explainable Web Application Security Intelligence Platform",
+    "main":  "server/index.js",
+    "type":  "commonjs",
+    "scripts":  {
+                    "start":  "node server/index.js",
+                    "server":  "node server/index.js",
+                    "client":  "npm --prefix client run dev",
+                    "build":  "npm --prefix client install --include=dev \u0026\u0026 npm --prefix client run build \u0026\u0026 node -e \"const fs=require(\u0027fs\u0027); if (fs.existsSync(\u0027prisma/schema.postgresql.prisma\u0027)) fs.copyFileSync(\u0027prisma/schema.postgresql.prisma\u0027, \u0027prisma/schema.prisma\u0027);\" \u0026\u0026 npx prisma generate \u0026\u0026 npx prisma db push --accept-data-loss",
+                    "postinstall":  "npx prisma generate",
+                    "db:push":  "npx prisma db push",
+                    "db:studio":  "npx prisma studio",
+                    "db:local":  "node -e \"const fs=require(\u0027fs\u0027); fs.copyFileSync(\u0027prisma/schema.sqlite.prisma\u0027, \u0027prisma/schema.prisma\u0027); console.log(\u0027Prisma set to local SQLite.\u0027);\" \u0026\u0026 npx prisma db push",
+                    "db:render":  "node -e \"const fs=require(\u0027fs\u0027); fs.copyFileSync(\u0027prisma/schema.postgresql.prisma\u0027, \u0027prisma/schema.prisma\u0027); console.log(\u0027Prisma set to Render PostgreSQL.\u0027);\" \u0026\u0026 npx prisma generate"
+                },
+    "keywords":  [
+                     "security",
+                     "web-security",
+                     "scanner",
+                     "cybersecurity",
+                     "passive-scanner",
+                     "explainable-security"
+                 ],
+    "author":  "SecureScan Team",
+    "license":  "MIT",
+    "dependencies":  {
+                         "@prisma/client":  "^5.22.0",
+                         "bcryptjs":  "^2.4.3",
+                         "cookie-parser":  "^1.4.7",
+                         "cors":  "^2.8.5",
+                         "dotenv":  "^16.4.5",
+                         "express":  "^4.21.1",
+                         "express-rate-limit":  "^7.4.1",
+                         "helmet":  "^8.0.0",
+                         "jsonwebtoken":  "^9.0.2",
+                         "pdfkit":  "^0.15.1"
+                     },
+    "devDependencies":  {
+                            "prisma":  "^5.22.0"
+                        }
 }
