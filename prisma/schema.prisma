@@ -1,0 +1,78 @@
+// SecureScan Prisma Schema - Local Development (SQLite)
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  websites     Website[]
+  scans        Scan[]
+
+  @@map("users")
+}
+
+model Website {
+  id                String    @id @default(uuid())
+  domain            String
+  verificationToken String    @unique
+  isVerified        Boolean   @default(false)
+  verifiedAt        DateTime?
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scans             Scan[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([userId, domain])
+  @@map("websites")
+}
+
+model Scan {
+  id             String    @id @default(uuid())
+  websiteId      String
+  website        Website   @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  score          Int       @default(100)
+  grade          String    @default("A+")
+  riskLevel      String    @default("Low Risk")
+  totalChecks    Int       @default(0)
+  criticalCount  Int       @default(0)
+  highCount      Int       @default(0)
+  mediumCount    Int       @default(0)
+  lowCount       Int       @default(0)
+  infoCount      Int       @default(0)
+  summary        String?
+  scanDurationMs Int       @default(0)
+  createdAt      DateTime  @default(now())
+  findings       Finding[]
+
+  @@map("scans")
+}
+
+model Finding {
+  id               String   @id @default(uuid())
+  scanId           String
+  scan             Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  category         String   // HTTPS, Headers, Cookies, PublicResources
+  name             String
+  severity         String   // Critical, High, Medium, Low, Informational
+  description      String
+  evidence         String
+  impact           String
+  remediation      String
+  technicalDetails String?
+  createdAt        DateTime @default(now())
+
+  @@map("findings")
+}
