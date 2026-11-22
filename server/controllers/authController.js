@@ -18,9 +18,33 @@ function setAuthCookie(res, token) {
   });
 }
 
+function extractAuthFields(req) {
+  const rawName =
+    req.cleanedName ?? req.body?.name ?? req.body?.fullName ?? req.name ?? '';
+  const rawEmail =
+    req.cleanedEmail ?? req.body?.email ?? req.email ?? '';
+  const password =
+    req.cleanedPassword ??
+    req.body?.password ??
+    req.body?.pass ??
+    req.password;
+
+  const cleanedName = typeof rawName === 'string' ? rawName.trim() : '';
+  const cleanedEmail =
+    typeof rawEmail === 'string' ? rawEmail.trim().toLowerCase() : '';
+
+  return { cleanedName, cleanedEmail, password };
+}
+
 async function register(req, res, next) {
   try {
-    const { cleanedName, cleanedEmail, password } = req;
+    const { cleanedName, cleanedEmail, password } = extractAuthFields(req);
+
+    if (!cleanedEmail || typeof password !== 'string' || password.length < 8) {
+      return res.status(400).json({
+        error: 'Valid email and a password of at least 8 characters are required.',
+      });
+    }
 
     // Check if user already exists
     const existing = await prisma.user.findUnique({
@@ -38,7 +62,7 @@ async function register(req, res, next) {
     // Create user in DB
     const user = await prisma.user.create({
       data: {
-        name: cleanedName,
+        name: cleanedName || cleanedEmail.split('@')[0],
         email: cleanedEmail,
         passwordHash: passwordHash,
       },
@@ -68,7 +92,11 @@ async function register(req, res, next) {
 
 async function login(req, res, next) {
   try {
-    const { cleanedEmail, password } = req;
+    const { cleanedEmail, password } = extractAuthFields(req);
+
+    if (!cleanedEmail || typeof password !== 'string' || password.length === 0) {
+      return res.status(400).json({ error: 'Email and password are required.' });
+    }
 
     // Find user
     const user = await prisma.user.findUnique({
